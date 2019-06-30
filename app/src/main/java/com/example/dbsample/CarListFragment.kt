@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.example.dbsample.data.AppDatabase
 import com.example.dbsample.data.Car
 import com.example.dbsample.data.CarRepository
+import com.example.dbsample.utilities.InjectorUtils
 import com.example.dbsample.viewmodels.CarListViewModel
 
 import kotlinx.android.synthetic.main.fragment_car_list.*
@@ -35,8 +36,10 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class CarListFragment : Fragment() {
-//    private val repository = CarRepository
-//    private val viewModel: CarListViewModel by viewModels()
+
+    private val carListlViewModel: CarListViewModel by viewModels {
+        InjectorUtils.provideCarListViewModelFactory(requireActivity())
+    }
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -57,35 +60,12 @@ class CarListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-//        viewModel.cars.observe(this, Observer<List<Car>> { car ->
-//        //        viewModel.cars.observe(viewLifecycleOwner) { car ->
-//            if (car.isNullOrEmpty()) {
-//                Log.v(ContentValues.TAG, "hoge")
-//            }
-////            //text1.text = "hoge"
-//        })
-        // Inflate the layout for this fragment
-
-//        thread {
-//            val carRepository = CarRepository.getInstance(AppDatabase.getInstance(this.requireContext()).CarDao())
-//            val car = Car("2", "taxi", "simple", 10, "")
-//            carRepository.insertCar(car)
-//
-//            carRepository.getCars().observe(this, Observer<List<Car>> { car ->
-//                if (car.isNullOrEmpty()) {
-//                     Log.v(ContentValues.TAG, "hoge")
-//                }
-//            })
-//        }
-        val carRepository = CarRepository.getInstance(AppDatabase.getInstance(this.requireContext()).CarDao())
-
-        carRepository.getCars().observe(this, Observer<List<Car>> { cars ->
+        carListlViewModel.cars.observe(this, Observer<List<Car>> { cars ->
             this.cars = cars
             if (!cars.isNullOrEmpty()) {
                 Log.v(ContentValues.TAG, "hoge : " + cars.toString())
             }
         })
-
 
         return inflater.inflate(R.layout.fragment_car_list, container, false)
     }
@@ -95,11 +75,7 @@ class CarListFragment : Fragment() {
 
         button1.setOnClickListener(){
             Log.v(ContentValues.TAG, "clicked")
-            thread {
-                val carRepository = CarRepository.getInstance(AppDatabase.getInstance(this.requireContext()).CarDao())
-                val car = Car("2", "truck", "simple", 10, "")
-                carRepository.insertCar(car)
-            }
+            carListlViewModel.addCar(input1.text.toString())
         }
 
     }

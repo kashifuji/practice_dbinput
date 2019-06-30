@@ -15,19 +15,6 @@ class MainActivity : AppCompatActivity(), CarListFragment.OnFragmentInteractionL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-        // CoroutineWorkerで動かす
-        thread {
-            val carRepository = CarRepository.getInstance(AppDatabase.getInstance(this.applicationContext).CarDao())
-//        val carRepository = CarRepository.getInstance(AppDatabase.getInstance(context).CarDao())
-            val car = Car("1","taxi", "simple", 10, "")
-            carRepository.insertCar(car)
-
-            val cars = carRepository.getCars()
-
-        }
-
     }
 
     override fun onFragmentInteraction(uri: Uri) {

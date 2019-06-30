@@ -11,9 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
+import com.example.dbsample.adapters.CarAdapter
 import com.example.dbsample.data.AppDatabase
 import com.example.dbsample.data.Car
 import com.example.dbsample.data.CarRepository
+import com.example.dbsample.databinding.FragmentCarListBinding
 import com.example.dbsample.utilities.InjectorUtils
 import com.example.dbsample.viewmodels.CarListViewModel
 
@@ -67,7 +70,21 @@ class CarListFragment : Fragment() {
             }
         })
 
-        return inflater.inflate(R.layout.fragment_car_list, container, false)
+        val binding = FragmentCarListBinding.inflate(inflater, container, false)
+        context ?: return binding.root
+
+        val adapter = CarAdapter()
+        binding.plantList.adapter = adapter
+        carListlViewModel.cars.observe(this, Observer<List<Car>> { cars ->
+            if (!cars.isNullOrEmpty()) {
+                adapter.submitList(cars)
+            }
+        })
+
+        setHasOptionsMenu(true)
+        return binding.root
+
+//        return inflater.inflate(R.layout.fragment_car_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
